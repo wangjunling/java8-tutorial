@@ -3,9 +3,8 @@ package com.winterbe.java8.samples.misc;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,6 +23,7 @@ public class Files1 {
         testWriter();
         testReadWriteLines();
         testReaderLines();
+		testWalkTree();
     }
 
     private static void testReaderLines() throws IOException {
@@ -101,4 +101,20 @@ public class Files1 {
         lines.add("print('foobar');");
         Files.write(Paths.get("res", "nashorn1-modified.js"), lines);
     }
+
+    private static void testWalkTree() throws IOException {
+        Files.walkFileTree(Paths.get(""), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                System.out.println(file.getFileName());
+                return FileVisitResult.CONTINUE;
+            }
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				System.out.println(dir.getFileName());
+				return FileVisitResult.CONTINUE;
+			}
+		});
+    }
+
 }
